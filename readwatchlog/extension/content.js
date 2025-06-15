@@ -1,22 +1,34 @@
-const url = window.location.href;
-const hostname = window.location.hostname;
+console.log("✅ Content script loaded");
 
-let type = "article";
-
-// Detect video pages
-if (hostname.includes("youtube.com") && url.includes("watch")) {
-  type = "video";
+function isYouTubeVideoPage() {
+  return location.hostname.includes('youtube.com') && window.location.href.includes('watch?v=');
 }
 
-const activity = {
-  type,
-  url,
-  title: document.title,
-};
+function getTitle() {
+  return document.title || "Untitled Page";
+}
 
-console.log("Detected activity:", activity);
+function sendPayloadIfVideo() {
+  const payload = {
+    title: getTitle(),
+    url: location.href,
+    type: isYouTubeVideoPage() ? 'video' : 'article'
+  };
 
-chrome.runtime.sendMessage(activity, (response) => {
-  console.log("Background response:", response);
-});
+  console.log("✅ Sending payload from content script:", payload);
+  chrome.runtime.sendMessage(payload);
+}
+
+// Send initially
+sendPayloadIfVideo();
+
+// For SPA: hook into history changes
+let lastUrl = location.href;
+setInterval(() => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    console.log("🔁 Detected URL change:", location.href);
+    sendPayloadIfVideo();
+  }
+}, 1000); // check every 1 second
 
