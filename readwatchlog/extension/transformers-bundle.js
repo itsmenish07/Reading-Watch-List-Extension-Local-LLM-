@@ -25,7 +25,11 @@ class TransformersAI {
       env.allowRemoteModels = true;
       env.allowLocalModels = true;
 
-      this.summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-6-6');
+      this.summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-6-6', {
+      quantized: true,
+      localFilesOnly: true,
+      modelBasePath: chrome.runtime.getURL('transformer/models')
+    });
 
       this.isLoaded = true;
       console.log("✅ Summarizer model loaded!");
