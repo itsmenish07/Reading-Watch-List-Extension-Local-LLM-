@@ -1,25 +1,39 @@
 {
   "manifest_version": 3,
-  "name": "Reading Watch Tracker",
+  "name": "Reading Tracker AI",
   "version": "1.0",
-  "permissions": ["tabs", "storage", "scripting"],
-  "host_permissions":["<all_urls>"],
-  "background": {
-    "service_worker": "background.js"
-  },
+  "description": "Automatically track and summarize your reading with local AI",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
+      "js": ["transformers-bundle.js", "content.js" , "transformer/transformer.min.js"],
+      "run_at" : "document_idle",
+      "type": "module"
+
     }
   ],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "perceptual-standard.jpg",
-        "48": "perceptual-standard.jpg",
-        "128": "perceptual-standard.jpg"
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["transformer/transformer.min.js", "transformers-bundle.js", "content.js", "transformer/models/**/*"],
+      "matches": ["<all_urls>"]
     }
-  }
+  ]
+
 }
