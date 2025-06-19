@@ -10,8 +10,9 @@ function renderCards() {
     }
 
     const filteredItems = currentFilter === "All"
-        ? currentItems
-        : currentItems.filter(item => item.type === currentFilter);
+  ? currentItems
+  : currentItems.filter(item => item.type.toLowerCase() === currentFilter.toLowerCase());
+
 
     cardGrid.innerHTML = filteredItems.map(item => `
         <div class="card">
@@ -40,7 +41,7 @@ function updateViewingText() {
 
 // Cycle through filters
 function toggleFilter() {
-    const filters = ["All", "Article", "Video", "Book", "Podcast"];
+    const filters = ["All", "Article", "Video"];
     const currentIndex = filters.indexOf(currentFilter);
     const nextIndex = (currentIndex + 1) % filters.length;
     currentFilter = filters[nextIndex];
