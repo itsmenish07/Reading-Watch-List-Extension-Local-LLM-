@@ -66,9 +66,17 @@ window.addEventListener("message", (event) => {
 // 🔵 Function to be called by your extension script
 function loadItemsFromExtension(dataArray) {
   console.log("Loaded items:", dataArray);
-  currentItems = dataArray;
+
+  currentItems = dataArray.map(item => ({
+    title: item.title || 'Untitled',
+    type: item.type || 'Article',
+    description: item.description || item.summary || 'No description available.', // ✅ FIXED LINE
+    source: item.source || item.url || '#'
+  }));
+
   renderCards();
 }
+
 
 // Initialize with empty cards first
 // renderCards();
@@ -78,3 +86,12 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
     loadItemsFromExtension(items);
   });
 }
+
+console.log("Mapped item:", {
+  title: item.title,
+  type: item.type,
+  description: item.description,
+  summary: item.summary,
+  source: item.source,
+  url: item.url
+});
