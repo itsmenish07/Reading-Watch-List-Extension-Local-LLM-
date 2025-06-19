@@ -2,6 +2,21 @@
 let isInitialized = false;
 let aiReady = false;
 
+const script = document.createElement("script");
+script.src = chrome.runtime.getURL("main.js");
+script.type = "text/javascript";
+(document.head || document.documentElement).appendChild(script);
+
+// ✅ Wait before posting
+setTimeout(() => {
+  chrome.storage.local.get("readingList", (result) => {
+  const items = result.readingList || [];
+  window.postMessage({ type: "EXT_ITEMS", data: items }, "*");
+});
+
+}, 1000); // 👈 1 second delay ensures main.js is ready
+
+
 // Initialize when page loads
 (async function initializeExtension() {
   if (isInitialized) return;
@@ -248,6 +263,8 @@ async function logContent(type, title, url, content = '') {
         console.log(`⏭️ Already logged: ${title}`);
         return;
       }
+
+
       
       list.unshift(entry); // Add to beginning
       
@@ -280,4 +297,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       status: aiReady ? 'ready' : 'loading'
     });
   }
+});
+
+chrome.storage.local.get("readingList", (result) => {
+    const items = result.readingList || [];
+    window.postMessage({ type: "EXT_ITEMS", data: items }, "*");
 });
