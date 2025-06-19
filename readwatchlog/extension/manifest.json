@@ -6,7 +6,7 @@
   "permissions": [
     "activeTab",
     "storage",
-    "webRequest"
+    "webRequest", "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -31,7 +31,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["transformer/transformer.min.js", "transformers-bundle.js", "content.js", "transformer/models/**/*" , "transformer/models/Xenova/distilbart-cnn-6-6/**"],
+      "resources": ["transformer/transformer.min.js", "transformers-bundle.js", "content.js", "main.js","transformer/models/**/*" , "transformer/models/Xenova/distilbart-cnn-6-6/**"],
       "matches": ["<all_urls>"]
     }
   ]
