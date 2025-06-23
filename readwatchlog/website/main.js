@@ -86,12 +86,3 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
     loadItemsFromExtension(items);
   });
 }
-
-console.log("Mapped item:", {
-  title: item.title,
-  type: item.type,
-  description: item.description,
-  summary: item.summary,
-  source: item.source,
-  url: item.url
-});
