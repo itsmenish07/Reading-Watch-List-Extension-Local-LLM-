@@ -6,8 +6,7 @@
   "permissions": [
     "activeTab",
     "storage",
-    "webRequest",
-    "scripting"
+    "webRequest", "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -15,29 +14,26 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["transformers-bundle.js", "content.js"],
-      "run_at": "document_idle"
+      "js": ["transformers-bundle.js", "content.js" , "transformer/transformer.min.js"],
+      "run_at" : "document_idle",
+      "type": "module"
+
     }
   ],
   "action": {
     "default_popup": "popup.html"
   },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
-  {
-    "resources": [
-      "firebase-app.js",
-      "firebase-firestore.js",
-      "main.js",
-      "transformer/transformer.min.js"
-    ],
-    "matches": ["<all_urls>"]
-  }
-],
-"content_security_policy": {
-  "extension_pages": "script-src 'self'; object-src 'self';"
-}
+    {
+      "resources": ["transformer/transformer.min.js", "transformers-bundle.js", "content.js", "main.js","transformer/models/**/*" , "transformer/models/Xenova/distilbart-cnn-6-6/**"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+
 }

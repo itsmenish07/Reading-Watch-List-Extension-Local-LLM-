@@ -1,39 +1,35 @@
-// background.js
-import { pushToFirebase } from './firebase-init.js';
-
 chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
-  console.log("📨 Received data from content script:", data);
-
-  chrome.storage.local.get(["logs"], async (result) => {
+  chrome.storage.local.get(["logs"], (result) => {
     const logs = result.logs || [];
 
-    const newEntry = {
+    logs.push({
       ...data,
       time: Date.now()
-    };
+    });
 
-    logs.push(newEntry);
+    chrome.storage.local.set({ logs }, () => {
+      console.log("✅ Saved to logs:", data);
 
-    chrome.storage.local.set({ logs }, async () => {
-      console.log("✅ Saved locally:", newEntry);
-
-      try {
-        await pushToFirebase({
-          title: newEntry.title,
-          type: newEntry.type,
-          url: newEntry.source,
-          summary: newEntry.description || "No summary available",
-          timestamp: new Date().toISOString()
-        });
-
-        console.log("📤 Successfully pushed to Firebase");
-        sendResponse({ status: "saved" });
-      } catch (err) {
-        console.error("❌ Failed to push to Firebase:", err);
-        sendResponse({ status: "error", error: err.message });
-      }
+      // Send a confirmation response back to content.js
+      sendResponse({ status: "saved" });
     });
   });
 
-  return true; // Allows async sendResponse
+  // Tell Chrome this is an async response
+  return true;
+});
+
+// content.js or background.js
+const item = {
+  title: document.title,
+  type: window.location.hostname.includes("youtube.com") ? "Video" : "Article",
+  description: "This is a dummy summary or extract one",
+  source: window.location.href
+};
+
+// Save to chrome.storage.local
+chrome.storage.local.get(["savedItems"], (result) => {
+  const saved = result.savedItems || [];
+  saved.push(item);
+  chrome.storage.local.set({ savedItems: saved });
 });
