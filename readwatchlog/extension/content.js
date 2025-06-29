@@ -276,20 +276,36 @@ async function logContent(type, title, url, content = '') {
       chrome.storage.local.set({ readingList: list }, () => {
   console.log(`✅ Logged ${type}: ${title}`);
 
-  // ⬇️ ADD THIS BLOCK HERE
+ let firebaseConfig = null;
+
+chrome.storage.local.get("firebaseConfig", (res) => {
+  firebaseConfig = res.firebaseConfig || null;
+  console.log("✅ Firebase config loaded at startup:", firebaseConfig);
+});
+
+
+ chrome.storage.local.get("firebaseConfig", (result) => {
+  const config = result.firebaseConfig;
+
+  console.log("📦 Current Firebase config:", config);
+  console.log("📦 firebase config loaded");
+
+  if (!config || !config.apiKey || !config.projectId) {
+    console.error("❌ Firebase config not set");
+    return;
+  }
+
+  // 👇 Prepare your Firestore API call
   const docData = {
     fields: {
-      id: { stringValue: entry.id.toString() },
-      type: { stringValue: entry.type },
       title: { stringValue: entry.title },
       url: { stringValue: entry.url },
       summary: { stringValue: entry.summary },
-      timestamp: { timestampValue: entry.timestamp },
-      domain: { stringValue: entry.domain },
-      wordCount: { integerValue: entry.wordCount }
-    }};
+      timestamp: { timestampValue: entry.timestamp }
+    }
+  };
 
-     fetch(`https://firestore.googleapis.com/v1/projects/reading-watching-tracker/databases/(default)/documents/entries?key=AIzaSyCU6E-4Z_txAf-Jub0PYWXwlGjrvsv6X10`, {
+  fetch(`https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/(default)/documents/mediaTracker?key=${config.apiKey}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -299,7 +315,7 @@ async function logContent(type, title, url, content = '') {
     .then(res => res.json())
     .then(data => console.log("✅ Synced to Firebase (REST):", data))
     .catch(err => console.error("❌ Firebase sync failed:", err));
-  // ⬆️ END BLOCK
+});
 
   // Delay to ensure it's saved before reading
   setTimeout(() => {

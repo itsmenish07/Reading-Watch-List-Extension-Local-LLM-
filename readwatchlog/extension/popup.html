@@ -152,6 +152,45 @@
       font-weight: bold;
       font-size: 16px;
     }
+
+    summary{
+      cursor: pointer;
+      font-weight: bold;
+      color: #2e1aca;
+      padding: 10px;
+      background: rgba(46, 99, 185, 0.3);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      transition: background 0.2s, color 0.2s;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+    summary:hover {
+      background: rgba(18, 102, 238, 0.5);
+      color: #2c0fce;
+    }
+    #firebaseConfigInput::placeholder {
+    color: #8bbef4; /* Change to your desired color */
+    opacity: 1;     /* Optional: ensures full opacity */
+    margin: 20px;
+  }
+  #saveFirebaseConfig {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s ease;
+    display: flex;
+    justify-content:center ;
+    align-items: center; 
+ text-align: center;
+    margin: 10px auto;
+
+  }
   </style>
 </head>
 <body>
@@ -159,7 +198,13 @@
     <h2>🧠 AI Reading Tracker</h2>
     <div class="ai-status loading" id="aiStatus">🤖 Loading AI models...</div>
   </div>
-  
+  <details>
+  <summary>🔧 Connect Your Firebase</summary>
+
+<textarea id="firebaseConfigInput" placeholder="Paste your Firebase config JSON here..." rows="10" style="width: 395px; height: 100px; background-color: rgba(95, 33, 228, 0.5); color: aliceblue; margin: 10px; border-radius: 10px; border: solid; padding: 5px; margin-bottom: 5px;"></textarea>
+
+  <button id="saveFirebaseConfig">Save Config</button>
+</details>
   <div class="stats" id="stats">
     <div class="stat">
       <div class="stat-number" id="totalCount">0</div>

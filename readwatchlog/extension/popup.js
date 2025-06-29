@@ -141,3 +141,27 @@ function updateAIStatus(status) {
 // Make functions global for onclick handlers
 window.deleteEntry = deleteEntry;
 window.openUrl = openUrl;
+
+// Save Firebase config
+document.getElementById("saveFirebaseConfig").addEventListener("click", () => {
+  const input = document.getElementById("firebaseConfigInput").value.trim();
+
+  try {
+    // Try to parse valid JSON
+    const config = JSON.parse(input);
+
+    // Optional: basic validation check
+    if (!config.apiKey || !config.projectId) {
+      alert("❌ JSON missing required fields.");
+      return;
+    }
+
+    // Save to local storage
+    chrome.storage.local.set({ firebaseConfig: config }, () => {
+      alert("✅ Firebase config saved!");
+    });
+  } catch (e) {
+    console.error("Invalid JSON input:", e.message);
+    alert("❌ Invalid JSON. Please check your format.");
+  }
+});
